@@ -1,26 +1,26 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import recipesRoutes from './routes/recipes.routes.js';
+import express from "express";
+import dotenv from "dotenv";
+import router from "./routes.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-// Middlewares
-app.use(cors());
-app.use(express.json());
+// Global Middlewares
+app.use(express.json()); // To handle JSON data
+app.use(express.urlencoded({ extended: true })); // For URL-encoded form data
 
-// Rutas
-app.use('/recipes', recipesRoutes);
+// Routes
+app.use("/", router);
 
-// Ruta base
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la API de recetas de cocina');
+// Global middleware for error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong!" });
 });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
